@@ -12,77 +12,75 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* سیستم رنگ‌بندی سینمایی برای ۴ زمان روز */
+        /* --- THE TIME ENGINE VARIABLES --- */
         :root {
-            --glass-bg: rgba(15, 17, 26, 0.35);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            /* شیشه اصلی */
+            --glass-bg: rgba(15, 17, 26, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.06);
             --text-main: #ffffff;
             
-            /* متغیرهای پارالکس (توسط جاوااسکریپت مقداردهی می‌شوند) */
-            --mx: 0; 
-            --my: 0;
-
-            /* تم روز (Day) */
-            --sky-top: #0a66c2;
-            --sky-mid: #56CCF2;
-            --sky-bottom: #d2f4ff;
-            --sun-color: #ffffff;
-            --sun-glow: rgba(255, 240, 180, 0.8);
-            --sun-pos-y: 25%;
-            --mountain-3: #2d6b9e; /* دورترین */
-            --mountain-2: #1c4a73;
-            --mountain-1: #0a2540; /* نزدیک‌ترین */
-            --fog-color: rgba(210, 244, 255, 0.6);
-            --star-opacity: 0;
-            --ambient-light: rgba(86, 204, 242, 0.2);
+            /* ترانزیشن نرم و سینمایی برای تغییر زمان */
+            --time-transition: 4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* تم طلوع (Sunrise) */
-        [data-time="sunrise"] {
-            --sky-top: #2c3e50;
-            --sky-mid: #fd746c;
-            --sky-bottom: #ff9068;
-            --sun-color: #ffeaa7;
-            --sun-glow: rgba(255, 144, 104, 0.8);
-            --sun-pos-y: 60%;
-            --mountain-3: #56425e;
-            --mountain-2: #382542;
-            --mountain-1: #1a0f24;
-            --fog-color: rgba(255, 144, 104, 0.5);
-            --star-opacity: 0.2;
-            --ambient-light: rgba(253, 116, 108, 0.2);
+        /* --- DAY THEME --- */
+        [data-time="day"] {
+            --sky-1: #87CEEB; --sky-2: #e0f6ff;
+            --sun-y: 20%; --sun-opacity: 1; --sun-glow: rgba(253, 224, 71, 0.6);
+            --moon-y: -20%; --moon-opacity: 0;
+            --stars-opacity: 0;
+            --birds-opacity: 0.8;
+            --mount-3: #a3c1da; /* دورترین */
+            --mount-2: #6897bb;
+            --mount-1: #3b6978;
+            --forest: #204051;  /* نزدیک‌ترین */
+            --river: #94d0e8;
+            --river-glow: #e0f6ff;
         }
 
-        /* تم غروب (Sunset) - دراماتیک و حرفه‌ای */
+        /* --- SUNSET THEME --- */
         [data-time="sunset"] {
-            --sky-top: #1a0b2e;
-            --sky-mid: #61184a;
-            --sky-bottom: #f25c54;
-            --sun-color: #ffb4a2;
-            --sun-glow: rgba(242, 92, 84, 0.8);
-            --sun-pos-y: 65%;
-            --mountain-3: #3b1c3d;
-            --mountain-2: #240f26;
-            --mountain-1: #0f0412;
-            --fog-color: rgba(242, 92, 84, 0.4);
-            --star-opacity: 0.4;
-            --ambient-light: rgba(242, 92, 84, 0.15);
+            --sky-1: #2a1537; --sky-2: #ff7e5f;
+            --sun-y: 65%; --sun-opacity: 1; --sun-glow: rgba(255, 126, 95, 0.8);
+            --moon-y: -20%; --moon-opacity: 0;
+            --stars-opacity: 0.3;
+            --birds-opacity: 0.6;
+            --mount-3: #6b3e64; 
+            --mount-2: #4a294b;
+            --mount-1: #2d1b36;
+            --forest: #140d1e;
+            --river: #e88c7d;
+            --river-glow: #ff7e5f;
         }
 
-        /* تم شب (Night) - عمیق و کهکشانی */
+        /* --- NIGHT THEME --- */
         [data-time="night"] {
-            --sky-top: #03040a;
-            --sky-mid: #0a0e20;
-            --sky-bottom: #141a35;
-            --sun-color: #e2e8f0;
-            --sun-glow: rgba(148, 163, 184, 0.4);
-            --sun-pos-y: 20%;
-            --mountain-3: #0f1322;
-            --mountain-2: #080a14;
-            --mountain-1: #020305;
-            --fog-color: rgba(20, 26, 53, 0.5);
-            --star-opacity: 1;
-            --ambient-light: rgba(100, 120, 255, 0.05);
+            --sky-1: #060814; --sky-2: #161b33;
+            --sun-y: 100%; --sun-opacity: 0; --sun-glow: rgba(0,0,0,0);
+            --moon-y: 25%; --moon-opacity: 1;
+            --stars-opacity: 1;
+            --birds-opacity: 0;
+            --mount-3: #14182b; 
+            --mount-2: #0d1020;
+            --mount-1: #070914;
+            --forest: #03040a;
+            --river: #1a223e;
+            --river-glow: #2d3b66;
+        }
+
+        /* --- SUNRISE THEME --- */
+        [data-time="sunrise"] {
+            --sky-1: #4b6cb7; --sky-2: #ffc371;
+            --sun-y: 55%; --sun-opacity: 1; --sun-glow: rgba(255, 195, 113, 0.7);
+            --moon-y: -20%; --moon-opacity: 0;
+            --stars-opacity: 0.1;
+            --birds-opacity: 0.5;
+            --mount-3: #5c5285; 
+            --mount-2: #413866;
+            --mount-1: #261f42;
+            --forest: #120e24;
+            --river: #dca376;
+            --river-glow: #ffc371;
         }
 
         * { box-sizing: border-box; }
@@ -90,143 +88,126 @@
         body {
             margin: 0; padding: 0;
             font-family: 'Outfit', sans-serif;
+            background-color: #000; /* Fallback */
             color: var(--text-main);
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
             overflow: hidden;
-            background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 40%, var(--sky-bottom) 100%);
-            transition: background 4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
-        /* --- اتمسفر و نورپردازی محیطی --- */
-        .ambient-glow {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 25% var(--sun-pos-y), var(--ambient-light) 0%, transparent 60%);
-            z-index: 1; pointer-events: none;
-            transition: all 4s ease;
-        }
-
-        /* --- خورشید و ماه --- */
-        .celestial-container {
+        /* --- SVG LANDSCAPE CONTAINER --- */
+        #landscape-wrapper {
             position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 2; pointer-events: none;
+            top: -5%; left: -5%; width: 110vw; height: 110vh; /* بزرگتر برای پارالاکس */
+            z-index: 0;
+            pointer-events: none;
+            /* افکت پارالاکس روی کل منظره */
+            transform: translate(calc(var(--mouse-x, 0) * -15px), calc(var(--mouse-y, 0) * -15px));
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .sun-moon {
-            position: absolute;
-            /* قرارگیری در نقطه طلایی (سمت چپ) تا پشت کارت نیفتد */
-            left: 20%; 
-            top: var(--sun-pos-y);
-            width: 140px; height: 140px;
-            background: var(--sun-color);
-            border-radius: 50%;
-            box-shadow: 
-                0 0 80px 20px var(--sun-glow),
-                0 0 160px 40px var(--sun-glow),
-                inset 0 0 20px rgba(255,255,255,0.8);
-            transition: all 4s cubic-bezier(0.34, 1.56, 0.64, 1); /* انیمیشن بانس ملایم */
-            transform: translate(-50%, -50%) translate(calc(var(--mx) * -10px), calc(var(--my) * -10px));
+        svg {
+            width: 100%; height: 100%;
+            display: block;
         }
 
-        /* --- ستاره‌ها و شهاب‌سنگ‌ها --- */
-        #stars-container, .meteor-shower {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 1; opacity: var(--star-opacity); transition: opacity 4s ease;
+        /* متریال‌های SVG که با زمان تغییر می‌کنند */
+        .sky-fill { stop-color: var(--sky-1); transition: stop-color var(--time-transition); }
+        .sky-fill-2 { stop-color: var(--sky-2); transition: stop-color var(--time-transition); }
+        
+        .mount-3-fill { fill: var(--mount-3); transition: fill var(--time-transition); }
+        .mount-2-fill { fill: var(--mount-2); transition: fill var(--time-transition); }
+        .mount-1-fill { fill: var(--mount-1); transition: fill var(--time-transition); }
+        .forest-fill { fill: var(--forest); transition: fill var(--time-transition); }
+        .river-fill { fill: var(--river); transition: fill var(--time-transition); }
+        
+        .sun-group {
+            transform: translateY(var(--sun-y));
+            opacity: var(--sun-opacity);
+            transition: transform var(--time-transition), opacity var(--time-transition);
+        }
+        .sun-glow-fill { fill: var(--sun-glow); transition: fill var(--time-transition); }
+        
+        .moon-group {
+            transform: translateY(var(--moon-y));
+            opacity: var(--moon-opacity);
+            transition: transform var(--time-transition), opacity var(--time-transition);
         }
 
-        .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle infinite ease-in-out; }
-        @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 6px #fff; } }
+        #stars-group { opacity: var(--stars-opacity); transition: opacity var(--time-transition); }
+        #birds-group { opacity: var(--birds-opacity); transition: opacity var(--time-transition); }
 
-        .meteor {
-            position: absolute; width: 150px; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8));
-            transform: rotate(-45deg); opacity: 0;
+        /* انیمیشن پرندگان */
+        .bird {
+            animation: fly 25s linear infinite;
         }
-        .meteor::before { content: ''; position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: 2px; height: 2px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 2px #fff; }
-        @keyframes shootingStar { 0% { transform: rotate(-45deg) translateX(-10vw); opacity: 0; } 5% { opacity: 1; } 20% { transform: rotate(-45deg) translateX(120vw); opacity: 0; } 100% { opacity: 0; } }
-
-        .m-1 { top: 15%; left: 20%; animation: shootingStar 5s linear infinite 0s; }
-        .m-2 { top: -10%; left: 60%; animation: shootingStar 7s linear infinite 2s; }
-        .m-3 { top: 30%; left: 80%; animation: shootingStar 6s linear infinite 4s; }
-
-        /* --- سیستم کوهستان پارالکس (Parallax Mountains) --- */
-        .landscape {
-            position: absolute; bottom: 0; left: 0; width: 100vw; height: 60vh;
-            z-index: 3; pointer-events: none;
-            display: flex; align-items: flex-end;
+        @keyframes fly {
+            0% { transform: translateX(-200px) translateY(0) scale(0.6); }
+            50% { transform: translateX(1000px) translateY(-100px) scale(0.8); }
+            100% { transform: translateX(2200px) translateY(-50px) scale(0.6); }
         }
 
-        .landscape svg { position: absolute; bottom: -2px; width: 110vw; left: -5vw; height: auto; transition: fill 4s ease; }
-
-        /* لایه‌بندی و افکت پارالکس (حرکت بر اساس موس) */
-        .layer-3 { 
-            fill: var(--mountain-3); 
-            transform: translateX(calc(var(--mx) * -15px)); 
-            filter: drop-shadow(0 -20px 30px var(--fog-color));
-        }
-        .layer-2 { 
-            fill: var(--mountain-2); 
-            transform: translateX(calc(var(--mx) * -30px)); 
-            filter: drop-shadow(0 -15px 25px var(--fog-color));
-        }
-        .layer-1 { 
-            fill: var(--mountain-1); 
-            transform: translateX(calc(var(--mx) * -50px)); 
+        /* ستاره‌های چشمک‌زن داخل SVG */
+        @keyframes twinkle-svg {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
         }
 
-        /* --- کارت شیشه‌ای پرو (Ultra-Premium Glass) --- */
+        /* --- PREMIUM GLASS UI --- */
         .workspace-card {
-            position: relative; z-index: 10;
+            position: relative;
+            z-index: 10;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-top: 1px solid rgba(255, 255, 255, 0.15);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 32px;
-            padding: 45px 40px;
-            width: 100%; max-width: 400px;
-            box-shadow: 
-                0 40px 80px rgba(0, 0, 0, 0.4), 
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-            
-            /* افکت شناور بودن کارت برخلاف حرکت کوه‌ها */
-            transform: translate(calc(var(--mx) * 15px), calc(var(--my) * 15px)) translateY(30px);
-            opacity: 0;
-            animation: cardEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            border-radius: 30px;
+            padding: 55px 45px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            /* افکت پارالاکس معکوس برای القای عمق شدید */
+            transform: translate(calc(var(--mouse-x, 0) * 10px), calc(var(--mouse-y, 0) * 10px));
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease;
         }
-
-        @keyframes cardEntrance { to { opacity: 1; transform: translate(calc(var(--mx) * 15px), calc(var(--my) * 15px)) translateY(0); } }
 
         .header-section { text-align: center; margin-bottom: 45px; }
-        h1 { margin: 0; font-size: 34px; font-weight: 600; letter-spacing: -0.5px; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        p.subtitle { margin: 8px 0 0 0; font-size: 11px; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; color: rgba(255,255,255,0.6); }
-
-        .grid { display: flex; flex-direction: column; gap: 14px; }
-
-        .btn {
-            display: flex; align-items: center; justify-content: flex-start; gap: 20px;
-            text-decoration: none; color: rgba(255,255,255,0.9); font-size: 16px; font-weight: 500;
-            padding: 18px 28px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative; overflow: hidden;
-            opacity: 0; transform: translateY(15px);
-            animation: btnEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        h1 { 
+            margin: 0; font-size: 34px; font-weight: 600; letter-spacing: -0.5px; 
+            background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        p.subtitle { 
+            margin: 8px 0 0 0; font-size: 12px; font-weight: 600; letter-spacing: 5px; 
+            text-transform: uppercase; color: rgba(255,255,255,0.5); 
         }
 
-        @keyframes btnEntrance { to { opacity: 1; transform: translateY(0); } }
-        .btn:nth-child(1) { animation-delay: 0.1s; } .btn:nth-child(2) { animation-delay: 0.2s; }
-        .btn:nth-child(3) { animation-delay: 0.3s; } .btn:nth-child(4) { animation-delay: 0.4s; }
-        .btn:nth-child(5) { animation-delay: 0.5s; }
+        .grid { display: flex; flex-direction: column; gap: 16px; }
 
-        .btn:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.15); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .btn i { font-size: 20px; width: 24px; text-align: center; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); color: rgba(255,255,255,0.7); }
-        .btn:hover i { transform: scale(1.2) rotate(-5deg); }
+        .btn {
+            display: flex; align-items: center; gap: 16px;
+            text-decoration: none; color: rgba(255,255,255,0.9); font-size: 16px; font-weight: 500;
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; overflow: hidden;
+        }
 
-        /* لاین رنگی برندها */
+        .btn:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+            transform: translateY(-3px) scale(1.01); 
+            border-color: rgba(255, 255, 255, 0.15); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .btn i { font-size: 20px; width: 24px; text-align: center; transition: all 0.4s ease; color: rgba(255,255,255,0.6); }
+        .btn:hover i { transform: scale(1.2); }
+
         .btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 2px; transition: all 0.6s ease; }
         .btn.youtube:hover::before { left: 0; background: linear-gradient(90deg, transparent, #ff0000, transparent); }
         .btn.youtube:hover i { color: #ff0000; text-shadow: 0 0 15px rgba(255,0,0,0.5); }
@@ -243,26 +224,65 @@
 </head>
 <body data-time="day">
 
-    <div class="ambient-glow"></div>
-    <div id="stars-container"></div>
-    <div class="meteor-shower"><div class="meteor m-1"></div><div class="meteor m-2"></div><div class="meteor m-3"></div></div>
+    <div id="landscape-wrapper">
+        <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" class="sky-fill"/>
+                    <stop offset="100%" class="sky-fill-2"/>
+                </linearGradient>
 
-    <div class="celestial-container">
-        <div class="sun-moon" id="sun-moon"></div>
+                <linearGradient id="river-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--river-glow)"/>
+                    <stop offset="100%" stop-color="var(--river)"/>
+                </linearGradient>
+
+                <g id="pine-tree">
+                    <path d="M15,0 L30,40 L22,40 L35,80 L20,80 L40,130 L-10,130 L10,80 L-5,80 L8,40 L0,40 Z" />
+                </g>
+
+                <g id="bird-shape">
+                    <path d="M0,15 Q10,0 20,15 Q30,0 40,15 Q20,20 0,15" fill="#111" opacity="0.6"/>
+                </g>
+            </defs>
+
+            <rect width="100%" height="100%" fill="url(#sky-grad)"/>
+
+            <g id="stars-group"></g>
+
+            <g class="sun-group" transform="translate(1300, 0)">
+                <circle cx="0" cy="0" r="250" class="sun-glow-fill" opacity="0.15"/>
+                <circle cx="0" cy="0" r="180" class="sun-glow-fill" opacity="0.25"/>
+                <circle cx="0" cy="0" r="120" class="sun-glow-fill" opacity="0.5"/>
+                <circle cx="0" cy="0" r="70" fill="#fff" opacity="0.9"/>
+            </g>
+
+            <g class="moon-group" transform="translate(1300, 0)">
+                <path d="M -30,-50 A 70,70 0 1,0 50,30 A 80,80 0 1,1 -30,-50 Z" fill="#e2e8f0" opacity="0.9"/>
+                <circle cx="0" cy="0" r="150" fill="#e2e8f0" opacity="0.05"/>
+            </g>
+
+            <g id="birds-group">
+                <use href="#bird-shape" class="bird" x="100" y="300" />
+                <use href="#bird-shape" class="bird" x="150" y="270" style="animation-delay: -2s;" />
+                <use href="#bird-shape" class="bird" x="80" y="330" style="animation-delay: -5s;" />
+                <use href="#bird-shape" class="bird" x="250" y="200" style="animation-delay: -10s; transform: scale(0.6);" />
+            </g>
+
+            <path class="mount-3-fill" d="M0,650 Q200,500 450,580 T950,480 T1400,600 T1920,400 L1920,1080 L0,1080 Z" />
+
+            <path class="mount-2-fill" d="M0,750 Q250,600 550,750 T1100,600 T1600,750 T1920,650 L1920,1080 L0,1080 Z" />
+
+            <path class="mount-1-fill" d="M0,850 Q300,750 700,900 T1300,800 T1920,950 L1920,1080 L0,1080 Z" />
+
+            <path class="river-fill" d="M0,1080 L0,950 Q250,920 400,1000 T800,1080 Z" />
+
+            <g id="forest-group" class="forest-fill"></g>
+
+            <rect y="1020" width="1920" height="60" class="forest-fill" />
+        </svg>
     </div>
-
-    <div class="landscape">
-        <svg class="layer-3" viewBox="0 0 1440 320" preserveAspectRatio="none">
-            <path d="M0,256 L48,224 C96,192,192,128,288,122.7 C384,117,480,171,576,192 C672,213,768,203,864,170.7 C960,139,1056,85,1152,80 C1248,75,1344,117,1392,138.7 L1440,160 L1440,320 L0,320 Z"></path>
-        </svg>
-        <svg class="layer-2" viewBox="0 0 1440 320" preserveAspectRatio="none">
-            <path d="M0,192 L60,170.7 C120,149,240,107,360,117.3 C480,128,600,192,720,208 C840,224,960,192,1080,149.3 C1200,107,1320,53,1380,26.7 L1440,0 L1440,320 L0,320 Z"></path>
-        </svg>
-        <svg class="layer-1" viewBox="0 0 1440 320" preserveAspectRatio="none">
-            <path d="M0,128 L80,144 C160,160,320,192,480,181.3 C640,171,800,117,960,101.3 C1120,85,1280,107,1360,117.3 L1440,128 L1440,320 L0,320 Z"></path>
-        </svg>
-    </div>
-
+    
     <div class="workspace-card">
         <div class="header-section">
             <h1>Daily Routine</h1>
@@ -271,60 +291,89 @@
 
         <div class="grid">
             <a href="https://openart.ai/credit/openart-youtube" target="_blank" class="btn youtube">
-                <i class="fa-brands fa-youtube"></i> <span>YouTube</span>
+                <i class="fa-brands fa-youtube"></i> YouTube
             </a>
             <a href="https://t.co/wM8qbo6lMa" target="_blank" class="btn twitter">
-                <i class="fa-brands fa-x-twitter"></i> <span>Twitter (X)</span>
+                <i class="fa-brands fa-x-twitter"></i> Twitter (X)
             </a>
             <a href="https://openart.ai/credit/openart-instagram" target="_blank" class="btn instagram">
-                <i class="fa-brands fa-instagram"></i> <span>Instagram</span>
+                <i class="fa-brands fa-instagram"></i> Instagram
             </a>
             <a href="https://openart.ai/credit/openart-linkedin-credits" target="_blank" class="btn linkedin">
-                <i class="fa-brands fa-linkedin-in"></i> <span>LinkedIn</span>
+                <i class="fa-brands fa-linkedin-in"></i> LinkedIn
             </a>
             <a href="https://openart.ai/credit/openart-trial" target="_blank" class="btn discord">
-                <i class="fa-brands fa-discord"></i> <span>Discord</span>
+                <i class="fa-brands fa-discord"></i> Discord
             </a>
         </div>
     </div>
 
     <script>
-        // تولید ستاره‌ها
-        const starsContainer = document.getElementById('stars-container');
-        for (let i = 0; i < 150; i++) {
-            let star = document.createElement('div');
-            star.classList.add('star');
-            star.style.left = `${Math.random() * 100}vw`;
-            star.style.top = `${Math.random() * 70}vh`;
-            let size = Math.random() * 1.5 + 0.5;
-            star.style.width = `${size}px`;
-            star.style.height = `${size}px`;
-            star.style.animationDuration = `${Math.random() * 3 + 2}s`;
-            star.style.animationDelay = `${Math.random() * 5}s`;
-            starsContainer.appendChild(star);
+        // --- 1. THE SVG BUILDER ENGINE ---
+        
+        // الگوریتم ساخت ستاره‌های آسمان
+        const starsGroup = document.getElementById('stars-group');
+        for (let i = 0; i < 200; i++) {
+            let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", Math.random() * 1920);
+            circle.setAttribute("cy", Math.random() * 700); // فقط در قسمت بالایی تصویر
+            circle.setAttribute("r", Math.random() * 1.5 + 0.5);
+            circle.setAttribute("fill", "#ffffff");
+            // انیمیشن چشمک‌زن رندوم
+            circle.style.animation = `twinkle-svg ${Math.random() * 4 + 2}s infinite alternate ${Math.random() * 5}s`;
+            starsGroup.appendChild(circle);
         }
 
-        // موتور زمان دقیق
+        // الگوریتم ساخت جنگل انبوه داینامیک (کاشت اتوماتیک 120 درخت!)
+        const forestGroup = document.getElementById('forest-group');
+        for (let i = 0; i < 120; i++) {
+            let use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+            use.setAttribute("href", "#pine-tree");
+            
+            // پخش کردن درخت‌ها در عرض کادر (تراکم بیشتر در لبه‌ها)
+            let x = (1920 / 120) * i + (Math.random() * 30 - 15);
+            let scale = Math.random() * 0.8 + 0.4; // اندازه‌های مختلف
+            
+            // تنظیم ارتفاع درخت‌ها متناسب با پرسپکتیو کوه‌ها
+            let baseHeight = 1000;
+            // در وسط کادر (محل رودخانه) درخت‌ها پایین‌تر هستند
+            if (x > 300 && x < 800) baseHeight = 1050 + (Math.random()*20); 
+            
+            let y = baseHeight - (scale * 130) + (Math.random() * 40); 
+            
+            use.setAttribute("transform", `translate(${x}, ${y}) scale(${scale})`);
+            
+            // سایه روشن رندوم برای درخت‌ها جهت ایجاد حجم
+            use.setAttribute("opacity", Math.random() * 0.4 + 0.6);
+            
+            forestGroup.appendChild(use);
+        }
+
+        // --- 2. THE TIME ENGINE ---
         function checkTime() {
             const hour = new Date().getHours();
             let timeState = 'day';
 
             if (hour >= 5 && hour < 8) timeState = 'sunrise';
-            else if (hour >= 17 && hour < 20) timeState = 'sunset';
-            else if (hour >= 20 || hour < 5) timeState = 'night';
+            else if (hour >= 17 && hour < 19) timeState = 'sunset';
+            else if (hour >= 19 || hour < 5) timeState = 'night';
+
+            // اگر خواستی به صورت دستی تست کنی، خط بالا را کامنت کن و خط پایین را تغییر بده:
+            // timeState = 'sunset'; 
 
             document.body.setAttribute('data-time', timeState);
         }
-        checkTime(); setInterval(checkTime, 60000);
+        checkTime();
+        setInterval(checkTime, 60000); // بررسی هر 1 دقیقه
 
-        // موتور سه‌بعدی پارالکس (Parallax Engine)
-        window.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) - 0.5;
-            const y = (e.clientY / window.innerHeight) - 0.5;
+        // --- 3. 3D PARALLAX ENGINE ---
+        // ردیابی موس برای ایجاد حس عمقِ میدان (Depth of Field) بین UI و بک‌گراند
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = (e.clientX / window.innerWidth) * 2 - 1; // مقدار بین 1- و 1
+            const mouseY = (e.clientY / window.innerHeight) * 2 - 1;
             
-            // انتقال مختصات موس به CSS برای حرکت لایه‌ها
-            document.documentElement.style.setProperty('--mx', x);
-            document.documentElement.style.setProperty('--my', y);
+            document.documentElement.style.setProperty('--mouse-x', mouseX);
+            document.documentElement.style.setProperty('--mouse-y', mouseY);
         });
     </script>
 </body>
