@@ -14,11 +14,13 @@
     
     <style>
         :root {
-            --bg-color: #0a0b14;
-            --card-bg: rgba(20, 22, 35, 0.45);
+            --bg-base: #020308;
+            --card-bg: rgba(15, 17, 26, 0.45);
             --border-color: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.6);
+            --neon-cyan: #22d3ee;
+            --neon-purple: #c084fc;
         }
 
         * {
@@ -29,7 +31,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
+            background-color: var(--bg-base);
             color: var(--text-main);
             display: flex;
             justify-content: center;
@@ -39,95 +41,118 @@
             position: relative;
         }
 
-        /* Interactive Spotlight */
-        .spotlight {
+        /* 1. Canvas Layer for 3D Stardust/Bokeh */
+        #stardust {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
             pointer-events: none;
-            z-index: 1;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(99, 102, 241, 0.25) 0%, rgba(0, 0, 0, 0) 45%);
-            transition: background 0.1s ease;
         }
 
-        /* Ambient Orbs */
+        /* 2. Liquid Nebula Orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(120px);
-            z-index: 0;
-            animation: breathe 20s infinite alternate ease-in-out;
+            filter: blur(140px);
+            z-index: 1;
+            animation: breathe 25s infinite alternate ease-in-out;
+            opacity: 0.5;
         }
-        .orb-1 { width: 500px; height: 500px; background: rgba(56, 189, 248, 0.2); top: -10%; left: -10%; }
-        .orb-2 { width: 600px; height: 600px; background: rgba(168, 85, 247, 0.2); bottom: -20%; right: -10%; animation-delay: -5s; }
+        .orb-1 { width: 60vw; height: 60vw; background: rgba(30, 27, 75, 0.8); top: -20%; left: -10%; } /* Deep Violet */
+        .orb-2 { width: 50vw; height: 50vw; background: rgba(8, 47, 73, 0.7); bottom: -10%; right: -10%; animation-delay: -7s; } /* Ocean Dark */
+        .orb-3 { width: 40vw; height: 40vw; background: rgba(17, 24, 39, 0.9); top: 30%; left: 40%; animation-delay: -15s; } /* Void */
 
         @keyframes breathe {
-            0% { transform: scale(1) translate(0, 0); opacity: 0.6; }
-            100% { transform: scale(1.2) translate(30px, -30px); opacity: 0.9; }
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.3) translate(5vw, -5vw); }
         }
 
-        /* --- NEON METEOR SHOWER --- */
+        /* 3. High-Speed Continuous Meteor Shower */
         .meteor-shower {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
+            z-index: 2;
         }
 
         .meteor {
             position: absolute;
-            width: 150px; /* طول دنباله شهاب‌سنگ */
-            height: 1px;
-            background: linear-gradient(90deg, rgba(56, 189, 248, 0) 0%, rgba(56, 189, 248, 0.8) 100%);
+            width: 200px; /* کشیده‌تر برای حس سرعت */
+            height: 2px;
+            background: linear-gradient(90deg, rgba(34, 211, 238, 0) 0%, rgba(34, 211, 238, 0.8) 80%, #ffffff 100%);
             border-radius: 999px;
             transform: rotate(-45deg);
             opacity: 0;
+            box-shadow: 0 0 20px 2px rgba(34, 211, 238, 0.4); /* هاله نوری کل شهاب‌سنگ */
         }
 
-        /* سرِ درخشان شهاب‌سنگ */
-        .meteor::before {
+        .meteor::after {
             content: '';
             position: absolute;
             top: 50%; right: 0;
             transform: translateY(-50%);
-            width: 3px; height: 3px;
+            width: 4px; height: 4px;
             border-radius: 50%;
             background: #ffffff;
-            box-shadow: 0 0 12px 3px rgba(56, 189, 248, 0.9);
+            box-shadow: 0 0 15px 4px rgba(255, 255, 255, 0.9), 0 0 30px 8px var(--neon-cyan);
         }
 
         @keyframes shootingStar {
-            0% { transform: rotate(-45deg) translateX(-300px); opacity: 0; }
-            10% { opacity: 1; }
-            20% { transform: rotate(-45deg) translateX(1000px); opacity: 0; }
+            0% { transform: rotate(-45deg) translateX(-200px); opacity: 0; }
+            5% { opacity: 1; }
+            15% { transform: rotate(-45deg) translateX(1200px); opacity: 0; }
             100% { opacity: 0; }
         }
 
-        /* زمان‌بندی و موقعیت‌های رندوم برای طبیعی شدن */
-        .m-1 { top: 10%; left: 20%; animation: shootingStar 6s linear infinite; animation-delay: 1s; }
-        .m-2 { top: -10%; left: 60%; animation: shootingStar 8s linear infinite; animation-delay: 3.5s; }
-        .m-3 { top: 40%; left: -20%; animation: shootingStar 7s linear infinite; animation-delay: 6s; }
-        .m-4 { top: 70%; left: 40%; animation: shootingStar 9s linear infinite; animation-delay: 2s; }
-        .m-5 { top: 20%; left: 80%; animation: shootingStar 12s linear infinite; animation-delay: 8s; }
+        /* زمان‌بندی‌های تهاجمی و سریع برای بارش پیوسته */
+        .m-1 { top: 5%; left: 30%; animation: shootingStar 3s linear infinite; animation-delay: 0.1s; }
+        .m-2 { top: -10%; left: 70%; animation: shootingStar 4s linear infinite; animation-delay: 1.5s; }
+        .m-3 { top: 50%; left: -10%; animation: shootingStar 3.5s linear infinite; animation-delay: 0.8s; }
+        .m-4 { top: 80%; left: 50%; animation: shootingStar 4.5s linear infinite; animation-delay: 2.2s; }
+        .m-5 { top: 20%; left: 90%; animation: shootingStar 3.2s linear infinite; animation-delay: 0.5s; }
+        .m-6 { top: 35%; left: 10%; animation: shootingStar 4.8s linear infinite; animation-delay: 3s; }
+        .m-7 { top: -5%; left: 40%; animation: shootingStar 3.7s linear infinite; animation-delay: 1.8s; }
+        .m-8 { top: 65%; left: 80%; animation: shootingStar 4.1s linear infinite; animation-delay: 2.7s; }
 
+        /* 4. Interactive Spotlight */
+        .spotlight {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 3;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(34, 211, 238, 0.12) 0%, rgba(0, 0, 0, 0) 40%);
+        }
 
-        /* Main Glass Card */
+        /* 5. Main Glass Workspace Card */
         .workspace-card {
             position: relative;
-            z-index: 2;
+            z-index: 10;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 30px;
+            border-radius: 32px;
             padding: 50px 40px;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(35px);
-            -webkit-backdrop-filter: blur(35px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
             
             opacity: 0;
             transform: translateY(30px) scale(0.95);
             animation: cardEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* هاله نوری بسیار ظریف پشت کارت */
+        .workspace-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 50%, rgba(255,255,255,0.05) 100%);
+            border-radius: 34px;
+            z-index: -1;
+            opacity: 0.5;
         }
 
         @keyframes cardEntrance {
@@ -137,26 +162,27 @@
         /* Header Styling */
         .header-section {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 45px;
         }
         
         h1 {
             margin: 0;
-            font-size: 32px;
+            font-size: 34px;
             font-weight: 600;
             letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 50%, #818cf8 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #64748b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         p.subtitle {
-            margin: 8px 0 0 0;
+            margin: 10px 0 0 0;
             font-size: 12px;
             font-weight: 500;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: var(--text-muted);
+            color: var(--neon-cyan); /* رنگ تاکیدی مدرن */
+            opacity: 0.8;
         }
 
         /* The Buttons */
@@ -176,9 +202,9 @@
             font-weight: 500;
             padding: 18px 24px;
             
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
@@ -199,10 +225,11 @@
         .btn:nth-child(5) { animation-delay: 0.6s; }
 
         .btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px) scale(1.02);
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-3px) scale(1.02);
             color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         .btn i {
@@ -243,17 +270,24 @@
     </style>
 </head>
 <body>
+    <canvas id="stardust"></canvas>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
     <div class="meteor-shower">
         <div class="meteor m-1"></div>
         <div class="meteor m-2"></div>
         <div class="meteor m-3"></div>
         <div class="meteor m-4"></div>
         <div class="meteor m-5"></div>
+        <div class="meteor m-6"></div>
+        <div class="meteor m-7"></div>
+        <div class="meteor m-8"></div>
     </div>
 
     <div class="spotlight" id="spotlight"></div>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
     
     <div class="workspace-card">
         <div class="header-section">
@@ -281,15 +315,61 @@
     </div>
 
     <script>
+        // --- 1. Spotlight Effect ---
         const spotlight = document.getElementById('spotlight');
-        
         window.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) * 100;
             const y = (e.clientY / window.innerHeight) * 100;
-            
             spotlight.style.setProperty('--x', `${x}%`);
             spotlight.style.setProperty('--y', `${y}%`);
         });
+
+        // --- 2. Canvas Stardust (Bokeh) Engine ---
+        const canvas = document.getElementById('stardust');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let w, h;
+
+        function initCanvas() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+            particles = [];
+            // تولید 80 ذره معلق در فضا
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    radius: Math.random() * 2 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.3, // سرعت افقی بسیار آرام
+                    vy: (Math.random() - 0.5) * 0.3, // سرعت عمودی بسیار آرام
+                    opacity: Math.random() * 0.5 + 0.1
+                });
+            }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // بازگرداندن ذرات به داخل صفحه در صورت خروج
+                if (p.x < 0) p.x = w;
+                if (p.x > w) p.x = 0;
+                if (p.y < 0) p.y = h;
+                if (p.y > h) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(165, 243, 252, ${p.opacity})`; // رنگ آبی/سفید یخی
+                ctx.fill();
+            });
+            requestAnimationFrame(drawParticles);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        drawParticles();
     </script>
 </body>
 </html>
