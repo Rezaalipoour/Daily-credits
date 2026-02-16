@@ -7,80 +7,82 @@
     
     <link rel="icon" type="image/svg+xml" href="https://logo-teka.com/wp-content/uploads/2025/08/openart-ai-sign-logo.svg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- THE TIME ENGINE VARIABLES --- */
+        /* --- CORE VARIABLES --- */
         :root {
-            /* شیشه اصلی */
-            --glass-bg: rgba(15, 17, 26, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.06);
-            --text-main: #ffffff;
+            /* Default: Noon/Day */
+            --sky-top: #3ba0e6;
+            --sky-bottom: #97dffc;
+            --sun-color: #ffffff;
+            --sun-glow: rgba(255, 255, 255, 0.8);
+            --celestial-y: 10%;
+            --celestial-x: 50%;
             
-            /* ترانزیشن نرم و سینمایی برای تغییر زمان */
-            --time-transition: 4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* --- DAY THEME --- */
-        [data-time="day"] {
-            --sky-1: #87CEEB; --sky-2: #e0f6ff;
-            --sun-y: 20%; --sun-opacity: 1; --sun-glow: rgba(253, 224, 71, 0.6);
-            --moon-y: -20%; --moon-opacity: 0;
+            --clouds-tint: #ffffff;
+            --city-lights: 0;
             --stars-opacity: 0;
-            --birds-opacity: 0.8;
-            --mount-3: #a3c1da; /* دورترین */
-            --mount-2: #6897bb;
-            --mount-1: #3b6978;
-            --forest: #204051;  /* نزدیک‌ترین */
-            --river: #94d0e8;
-            --river-glow: #e0f6ff;
+
+            --layer-1: #5c9bbd; /* Distant */
+            --layer-2: #3a7a9e; /* Mid */
+            --layer-3: #1d5b7d; /* Closer */
+            --layer-4: #0b3d59; /* Trees Base */
+            --layer-5: #05263b; /* Ground */
+            
+            --glass-bg: rgba(5, 10, 20, 0.35);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        /* --- SUNSET THEME --- */
-        [data-time="sunset"] {
-            --sky-1: #2a1537; --sky-2: #ff7e5f;
-            --sun-y: 65%; --sun-opacity: 1; --sun-glow: rgba(255, 126, 95, 0.8);
-            --moon-y: -20%; --moon-opacity: 0;
-            --stars-opacity: 0.3;
-            --birds-opacity: 0.6;
-            --mount-3: #6b3e64; 
-            --mount-2: #4a294b;
-            --mount-1: #2d1b36;
-            --forest: #140d1e;
-            --river: #e88c7d;
-            --river-glow: #ff7e5f;
+        /* --- TIME PHASES --- */
+        body[data-time="dawn"] {
+            --sky-top: #2b4162; --sky-bottom: #fa9c7a;
+            --sun-color: #ffd6a5; --sun-glow: rgba(255, 214, 165, 0.6);
+            --celestial-y: 55%; --celestial-x: 20%;
+            --clouds-tint: #ffb5a7; --city-lights: 0.3; --stars-opacity: 0.4;
+            --layer-1: #4a4e69; --layer-2: #383a59; --layer-3: #22223b; --layer-4: #151528; --layer-5: #0a0a14;
         }
-
-        /* --- NIGHT THEME --- */
-        [data-time="night"] {
-            --sky-1: #060814; --sky-2: #161b33;
-            --sun-y: 100%; --sun-opacity: 0; --sun-glow: rgba(0,0,0,0);
-            --moon-y: 25%; --moon-opacity: 1;
-            --stars-opacity: 1;
-            --birds-opacity: 0;
-            --mount-3: #14182b; 
-            --mount-2: #0d1020;
-            --mount-1: #070914;
-            --forest: #03040a;
-            --river: #1a223e;
-            --river-glow: #2d3b66;
+        body[data-time="morning"] {
+            --sky-top: #4b88d4; --sky-bottom: #f2e3c6;
+            --sun-color: #fff9e6; --sun-glow: rgba(255, 249, 230, 0.7);
+            --celestial-y: 30%; --celestial-x: 35%;
+            --clouds-tint: #fdfaf6; --city-lights: 0; --stars-opacity: 0;
+            --layer-1: #6ea4bf; --layer-2: #4a84a6; --layer-3: #2a6182; --layer-4: #12405e; --layer-5: #08293f;
         }
-
-        /* --- SUNRISE THEME --- */
-        [data-time="sunrise"] {
-            --sky-1: #4b6cb7; --sky-2: #ffc371;
-            --sun-y: 55%; --sun-opacity: 1; --sun-glow: rgba(255, 195, 113, 0.7);
-            --moon-y: -20%; --moon-opacity: 0;
-            --stars-opacity: 0.1;
-            --birds-opacity: 0.5;
-            --mount-3: #5c5285; 
-            --mount-2: #413866;
-            --mount-1: #261f42;
-            --forest: #120e24;
-            --river: #dca376;
-            --river-glow: #ffc371;
+        body[data-time="afternoon"] {
+            --sky-top: #3083d6; --sky-bottom: #76c6f5;
+            --sun-color: #ffffff; --sun-glow: rgba(255, 255, 255, 0.6);
+            --celestial-y: 35%; --celestial-x: 65%;
+            --clouds-tint: #ffffff; --city-lights: 0; --stars-opacity: 0;
+            --layer-1: #508ca8; --layer-2: #346c8a; --layer-3: #1c4d69; --layer-4: #0c334a; --layer-5: #061c2b;
+        }
+        body[data-time="sunset"] {
+            --sky-top: #3b2c5c; --sky-bottom: #ff6b6b;
+            --sun-color: #ff9e7a; --sun-glow: rgba(255, 107, 107, 0.8);
+            --celestial-y: 55%; --celestial-x: 80%;
+            --clouds-tint: #ff8c8c; --city-lights: 0.6; --stars-opacity: 0.5;
+            --layer-1: #513654; --layer-2: #3a223d; --layer-3: #241126; --layer-4: #140817; --layer-5: #0a040b;
+        }
+        body[data-time="dusk"] {
+            --sky-top: #1a1c35; --sky-bottom: #523b6e;
+            --sun-color: #e0c3fc; --sun-glow: rgba(224, 195, 252, 0.3);
+            --celestial-y: 70%; --celestial-x: 85%;
+            --clouds-tint: #6a538a; --city-lights: 0.9; --stars-opacity: 0.8;
+            --layer-1: #2a2b4a; --layer-2: #1c1d33; --layer-3: #111121; --layer-4: #0a0a14; --layer-5: #04040a;
+        }
+        body[data-time="night"] {
+            --sky-top: #060814; --sky-bottom: #12182b;
+            --sun-color: #e2e8f0; --sun-glow: rgba(226, 232, 240, 0.4); /* MOON */
+            --celestial-y: 25%; --celestial-x: 20%;
+            --clouds-tint: #2a314d; --city-lights: 1; --stars-opacity: 1;
+            --layer-1: #1a1e36; --layer-2: #101326; --layer-3: #080a17; --layer-4: #04050d; --layer-5: #010205;
+        }
+        body[data-time="midnight"] {
+            --sky-top: #020308; --sky-bottom: #0b101c;
+            --sun-color: #ffffff; --sun-glow: rgba(255, 255, 255, 0.5); /* MOON */
+            --celestial-y: 15%; --celestial-x: 50%;
+            --clouds-tint: #181d30; --city-lights: 0.8; --stars-opacity: 1;
+            --layer-1: #111424; --layer-2: #0a0c17; --layer-3: #05060d; --layer-4: #020308; --layer-5: #000003;
         }
 
         * { box-sizing: border-box; }
@@ -88,124 +90,163 @@
         body {
             margin: 0; padding: 0;
             font-family: 'Outfit', sans-serif;
-            background-color: #000; /* Fallback */
-            color: var(--text-main);
+            background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
+            transition: background 15s ease-in-out;
+            min-height: 100vh; overflow: hidden;
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            position: relative;
         }
 
-        /* --- SVG LANDSCAPE CONTAINER --- */
-        #landscape-wrapper {
+        /* --- THE LIVING WORLD (BACKGROUND) --- */
+        .world-container {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0; pointer-events: none; overflow: hidden;
+        }
+
+        /* STARS */
+        .stars {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: var(--stars-opacity);
+            transition: opacity 15s ease-in-out;
+            animation: starTwinkle 5s infinite alternate;
+        }
+        @keyframes starTwinkle { 0% { opacity: calc(var(--stars-opacity) - 0.3); } 100% { opacity: var(--stars-opacity); } }
+
+        /* CELESTIAL BODY (Sun/Moon) */
+        .celestial {
             position: absolute;
-            top: -5%; left: -5%; width: 110vw; height: 110vh; /* بزرگتر برای پارالاکس */
-            z-index: 0;
-            pointer-events: none;
-            /* افکت پارالاکس روی کل منظره */
-            transform: translate(calc(var(--mouse-x, 0) * -15px), calc(var(--mouse-y, 0) * -15px));
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100px; height: 100px; border-radius: 50%;
+            background: var(--sun-color);
+            box-shadow: 0 0 80px 30px var(--sun-glow);
+            top: var(--celestial-y); left: var(--celestial-x);
+            transform: translate(-50%, -50%);
+            transition: all 15s cubic-bezier(0.4, 0.0, 0.2, 1);
         }
 
-        svg {
-            width: 100%; height: 100%;
-            display: block;
+        /* ANIMATED CLOUDS */
+        .clouds {
+            position: absolute; top: 15%; width: 200vw; height: 20vh;
+            display: flex; opacity: 0.6;
+            animation: driftClouds 60s linear infinite;
         }
+        .cloud-svg { fill: var(--clouds-tint); transition: fill 15s ease-in-out; }
+        @keyframes driftClouds { 0% { transform: translateX(0); } 100% { transform: translateX(-50vw); } }
 
-        /* متریال‌های SVG که با زمان تغییر می‌کنند */
-        .sky-fill { stop-color: var(--sky-1); transition: stop-color var(--time-transition); }
-        .sky-fill-2 { stop-color: var(--sky-2); transition: stop-color var(--time-transition); }
+        /* SVG LANDSCAPE LAYERS */
+        .landscape {
+            position: absolute; bottom: 0; left: 0; width: 100vw; height: 50vh;
+            display: flex; align-items: flex-end;
+        }
+        .landscape svg {
+            position: absolute; bottom: 0; width: 100%; height: auto;
+            transition: fill 15s ease-in-out;
+            min-width: 1200px; /* جلوگیری از بهم ریختگی در مانیتورهای کوچک */
+        }
         
-        .mount-3-fill { fill: var(--mount-3); transition: fill var(--time-transition); }
-        .mount-2-fill { fill: var(--mount-2); transition: fill var(--time-transition); }
-        .mount-1-fill { fill: var(--mount-1); transition: fill var(--time-transition); }
-        .forest-fill { fill: var(--forest); transition: fill var(--time-transition); }
-        .river-fill { fill: var(--river); transition: fill var(--time-transition); }
+        .layer-1 { fill: var(--layer-1); z-index: 10; padding-bottom: 12vh; }
+        .layer-2 { fill: var(--layer-2); z-index: 11; padding-bottom: 8vh; }
+        .layer-3 { fill: var(--layer-3); z-index: 12; padding-bottom: 4vh; }
+        .layer-4 { fill: var(--layer-4); z-index: 13; padding-bottom: 0; }
         
-        .sun-group {
-            transform: translateY(var(--sun-y));
-            opacity: var(--sun-opacity);
-            transition: transform var(--time-transition), opacity var(--time-transition);
+        /* CITY LIGHTS IN LAYER 2 */
+        .city-lights {
+            position: absolute; bottom: 18vh; left: 30%; width: 40%; height: 5vh;
+            z-index: 11; opacity: var(--city-lights);
+            background-image: radial-gradient(1px 1px at 10px 10px, #ffddaa, rgba(0,0,0,0)), radial-gradient(2px 2px at 20px 20px, #ffddaa, rgba(0,0,0,0)), radial-gradient(1px 1px at 30px 5px, #ffddaa, rgba(0,0,0,0)), radial-gradient(2px 2px at 40px 15px, #ffddaa, rgba(0,0,0,0));
+            background-size: 50px 25px;
+            transition: opacity 15s ease-in-out;
         }
-        .sun-glow-fill { fill: var(--sun-glow); transition: fill var(--time-transition); }
+
+        /* --- AMBIENT ANIMATIONS --- */
         
-        .moon-group {
-            transform: translateY(var(--moon-y));
-            opacity: var(--moon-opacity);
-            transition: transform var(--time-transition), opacity var(--time-transition);
+        /* AirPlane */
+        .airplane {
+            position: absolute; top: 25%; left: -10%; width: 24px; z-index: 5;
+            animation: flyPlane 45s linear infinite;
+            animation-delay: 5s;
         }
-
-        #stars-group { opacity: var(--stars-opacity); transition: opacity var(--time-transition); }
-        #birds-group { opacity: var(--birds-opacity); transition: opacity var(--time-transition); }
-
-        /* انیمیشن پرندگان */
-        .bird {
-            animation: fly 25s linear infinite;
+        .airplane svg { fill: var(--layer-4); transition: fill 15s ease; }
+        .blinking-light {
+            position: absolute; top: 50%; left: 0; width: 3px; height: 3px; background: red; border-radius: 50%;
+            box-shadow: 0 0 5px red; animation: blink 1s infinite;
         }
-        @keyframes fly {
-            0% { transform: translateX(-200px) translateY(0) scale(0.6); }
-            50% { transform: translateX(1000px) translateY(-100px) scale(0.8); }
-            100% { transform: translateX(2200px) translateY(-50px) scale(0.6); }
-        }
+        @keyframes flyPlane { 0% { transform: translateX(-10vw) scale(0.8); } 100% { transform: translateX(110vw) scale(0.8); } }
+        @keyframes blink { 0%, 49% { opacity: 0; } 50%, 100% { opacity: 1; } }
 
-        /* ستاره‌های چشمک‌زن داخل SVG */
-        @keyframes twinkle-svg {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; }
+        /* Hot Air Balloon */
+        .balloon-container {
+            position: absolute; bottom: -10%; left: 15%; z-index: 12;
+            animation: floatBalloon 70s linear infinite;
         }
+        .balloon-svg { width: 45px; fill: #ff5e5e; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2)); }
+        @keyframes floatBalloon { 0% { transform: translate(0, 10vh) scale(0.8); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translate(30vw, -80vh) scale(1.2); opacity: 0; } }
 
-        /* --- PREMIUM GLASS UI --- */
+        /* Birds */
+        .birds {
+            position: absolute; top: 40%; left: -20%; z-index: 11;
+            display: flex; gap: 10px;
+            animation: flyBirds 35s linear infinite;
+            animation-delay: 15s;
+        }
+        .bird-svg { width: 16px; fill: var(--layer-5); transition: fill 15s ease; animation: flap 1.5s infinite alternate ease-in-out; }
+        .bird-svg:nth-child(2) { margin-top: -15px; animation-delay: 0.2s; }
+        .bird-svg:nth-child(3) { margin-top: 10px; animation-delay: 0.4s; }
+        @keyframes flyBirds { 0% { transform: translate(-10vw, 10vh) scale(0.8); } 50% { transform: translate(50vw, -5vh) scale(1); } 100% { transform: translate(110vw, -15vh) scale(0.7); } }
+        @keyframes flap { 0% { transform: translateY(0); } 100% { transform: translateY(8px); } }
+
+
+        /* --- THE UI GLASS CARD --- */
         .workspace-card {
-            position: relative;
-            z-index: 10;
+            position: relative; z-index: 50; /* همیشه جلوتر از همه‌چیز */
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 30px;
-            padding: 55px 45px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(35px);
-            -webkit-backdrop-filter: blur(35px);
-            /* افکت پارالاکس معکوس برای القای عمق شدید */
-            transform: translate(calc(var(--mouse-x, 0) * 10px), calc(var(--mouse-y, 0) * 10px));
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 32px;
+            padding: 50px 45px;
+            width: 100%; max-width: 440px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), inset 0 2px 15px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            opacity: 0; transform: translateY(40px);
+            animation: cardEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
+        @keyframes cardEntrance { to { opacity: 1; transform: translateY(0); } }
+
         .header-section { text-align: center; margin-bottom: 45px; }
-        h1 { 
-            margin: 0; font-size: 34px; font-weight: 600; letter-spacing: -0.5px; 
-            background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        p.subtitle { 
-            margin: 8px 0 0 0; font-size: 12px; font-weight: 600; letter-spacing: 5px; 
-            text-transform: uppercase; color: rgba(255,255,255,0.5); 
-        }
+        h1 { margin: 0; font-size: 34px; font-weight: 600; letter-spacing: -0.5px; color: #ffffff; text-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        p.subtitle { margin: 8px 0 0 0; font-size: 13px; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; color: rgba(255,255,255,0.6); }
 
         .grid { display: flex; flex-direction: column; gap: 16px; }
 
         .btn {
-            display: flex; align-items: center; gap: 16px;
-            text-decoration: none; color: rgba(255,255,255,0.9); font-size: 16px; font-weight: 500;
-            padding: 18px 24px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex; align-items: center; gap: 18px;
+            text-decoration: none; color: #ffffff; font-size: 16px; font-weight: 500;
+            padding: 18px 26px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 18px;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative; overflow: hidden;
+            opacity: 0; transform: translateY(15px);
+            animation: btnEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .btn:hover { 
-            background: rgba(255, 255, 255, 0.08); 
-            transform: translateY(-3px) scale(1.01); 
-            border-color: rgba(255, 255, 255, 0.15); 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        @keyframes btnEntrance { to { opacity: 1; transform: translateY(0); } }
+        .btn:nth-child(1) { animation-delay: 0.2s; } .btn:nth-child(2) { animation-delay: 0.3s; }
+        .btn:nth-child(3) { animation-delay: 0.4s; } .btn:nth-child(4) { animation-delay: 0.5s; }
+        .btn:nth-child(5) { animation-delay: 0.6s; }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px) scale(1.01);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
-        
-        .btn i { font-size: 20px; width: 24px; text-align: center; transition: all 0.4s ease; color: rgba(255,255,255,0.6); }
+
+        .btn i { font-size: 20px; width: 26px; text-align: center; transition: all 0.4s ease; color: rgba(255,255,255,0.8); }
         .btn:hover i { transform: scale(1.2); }
 
         .btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 2px; transition: all 0.6s ease; }
@@ -222,67 +263,72 @@
 
     </style>
 </head>
-<body data-time="day">
+<body data-time="noon">
 
-    <div id="landscape-wrapper">
-        <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-            <defs>
-                <linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" class="sky-fill"/>
-                    <stop offset="100%" class="sky-fill-2"/>
-                </linearGradient>
+    <div class="world-container">
+        <div class="stars"></div>
+        <div class="celestial"></div>
+        
+        <div class="clouds">
+            <svg class="cloud-svg" viewBox="0 0 1000 200" style="width: 50vw; height: auto;">
+                <path d="M 100 100 Q 150 50 200 100 Q 250 80 300 120 Q 250 150 150 150 Z" />
+                <path d="M 600 120 Q 650 60 720 110 Q 780 90 820 130 Q 750 160 650 150 Z" />
+            </svg>
+            <svg class="cloud-svg" viewBox="0 0 1000 200" style="width: 50vw; height: auto; margin-left: -10vw; margin-top: 5vh;">
+                <path d="M 200 120 Q 240 80 300 110 Q 360 90 400 130 Q 300 170 200 140 Z" />
+            </svg>
+        </div>
 
-                <linearGradient id="river-grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="var(--river-glow)"/>
-                    <stop offset="100%" stop-color="var(--river)"/>
-                </linearGradient>
+        <div class="airplane">
+            <div class="blinking-light"></div>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21,16V14L13,9V3.5C13,2.67 12.33,2 11.5,2C10.67,2 10,2.67 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z"/></svg>
+        </div>
 
-                <g id="pine-tree">
-                    <path d="M15,0 L30,40 L22,40 L35,80 L20,80 L40,130 L-10,130 L10,80 L-5,80 L8,40 L0,40 Z" />
-                </g>
+        <div class="birds">
+            <svg class="bird-svg" viewBox="0 0 24 24"><path d="M22,14C22,14 18,10 12,12C6,10 2,14 2,14C2,14 6,12.5 12,14.5C18,12.5 22,14 22,14Z"/></svg>
+            <svg class="bird-svg" viewBox="0 0 24 24"><path d="M22,14C22,14 18,10 12,12C6,10 2,14 2,14C2,14 6,12.5 12,14.5C18,12.5 22,14 22,14Z"/></svg>
+            <svg class="bird-svg" viewBox="0 0 24 24"><path d="M22,14C22,14 18,10 12,12C6,10 2,14 2,14C2,14 6,12.5 12,14.5C18,12.5 22,14 22,14Z"/></svg>
+        </div>
 
-                <g id="bird-shape">
-                    <path d="M0,15 Q10,0 20,15 Q30,0 40,15 Q20,20 0,15" fill="#111" opacity="0.6"/>
-                </g>
-            </defs>
+        <div class="landscape">
+            <div class="city-lights"></div>
+            
+            <svg class="layer-1" viewBox="0 0 1200 200" preserveAspectRatio="none">
+                <path d="M0,200 L0,100 Q100,50 200,80 T400,60 T600,120 T800,40 T1000,90 T1200,50 L1200,200 Z" />
+            </svg>
+            
+            <svg class="layer-2" viewBox="0 0 1200 200" preserveAspectRatio="none">
+                <path d="M0,200 L0,150 Q80,90 150,130 T350,80 T550,150 T750,70 T950,140 T1200,100 L1200,200 Z" />
+            </svg>
+            
+            <div class="balloon-container">
+                <svg class="balloon-svg" viewBox="0 0 100 150">
+                    <path d="M50 0 C 10 0 0 40 0 60 C 0 90 35 120 40 130 L 60 130 C 65 120 100 90 100 60 C 100 40 90 0 50 0 Z" fill="#ff4757"/>
+                    <path d="M50 0 C 30 0 20 40 20 60 C 20 90 35 120 40 130 L 60 130 C 65 120 80 90 80 60 C 80 40 70 0 50 0 Z" fill="#ffa502"/>
+                    <path d="M50 0 C 40 0 35 40 35 60 C 35 90 45 120 45 130 L 55 130 C 55 120 65 90 65 60 C 65 40 60 0 50 0 Z" fill="#ffeb3b"/>
+                    <rect x="42" y="135" width="16" height="15" fill="#8B4513" rx="2"/>
+                    <line x1="42" y1="130" x2="42" y2="135" stroke="#fff" stroke-width="1"/>
+                    <line x1="58" y1="130" x2="58" y2="135" stroke="#fff" stroke-width="1"/>
+                </svg>
+            </div>
 
-            <rect width="100%" height="100%" fill="url(#sky-grad)"/>
-
-            <g id="stars-group"></g>
-
-            <g class="sun-group" transform="translate(1300, 0)">
-                <circle cx="0" cy="0" r="250" class="sun-glow-fill" opacity="0.15"/>
-                <circle cx="0" cy="0" r="180" class="sun-glow-fill" opacity="0.25"/>
-                <circle cx="0" cy="0" r="120" class="sun-glow-fill" opacity="0.5"/>
-                <circle cx="0" cy="0" r="70" fill="#fff" opacity="0.9"/>
-            </g>
-
-            <g class="moon-group" transform="translate(1300, 0)">
-                <path d="M -30,-50 A 70,70 0 1,0 50,30 A 80,80 0 1,1 -30,-50 Z" fill="#e2e8f0" opacity="0.9"/>
-                <circle cx="0" cy="0" r="150" fill="#e2e8f0" opacity="0.05"/>
-            </g>
-
-            <g id="birds-group">
-                <use href="#bird-shape" class="bird" x="100" y="300" />
-                <use href="#bird-shape" class="bird" x="150" y="270" style="animation-delay: -2s;" />
-                <use href="#bird-shape" class="bird" x="80" y="330" style="animation-delay: -5s;" />
-                <use href="#bird-shape" class="bird" x="250" y="200" style="animation-delay: -10s; transform: scale(0.6);" />
-            </g>
-
-            <path class="mount-3-fill" d="M0,650 Q200,500 450,580 T950,480 T1400,600 T1920,400 L1920,1080 L0,1080 Z" />
-
-            <path class="mount-2-fill" d="M0,750 Q250,600 550,750 T1100,600 T1600,750 T1920,650 L1920,1080 L0,1080 Z" />
-
-            <path class="mount-1-fill" d="M0,850 Q300,750 700,900 T1300,800 T1920,950 L1920,1080 L0,1080 Z" />
-
-            <path class="river-fill" d="M0,1080 L0,950 Q250,920 400,1000 T800,1080 Z" />
-
-            <g id="forest-group" class="forest-fill"></g>
-
-            <rect y="1020" width="1920" height="60" class="forest-fill" />
-        </svg>
+            <svg class="layer-3" viewBox="0 0 1200 200" preserveAspectRatio="none">
+                <path d="M0,200 L0,120 Q150,180 300,100 T600,160 T900,110 T1200,170 L1200,200 Z" />
+            </svg>
+            
+            <svg class="layer-4" viewBox="0 0 1200 200" preserveAspectRatio="none">
+                <path d="M0,200 L0,160 Q100,130 250,170 T550,140 T850,180 T1200,150 L1200,200 Z" />
+                <path d="M50,160 L45,180 L55,180 Z M50,150 L42,170 L58,170 Z M50,140 L40,160 L60,160 Z" />
+                <path d="M120,170 L115,190 L125,190 Z M120,160 L112,180 L128,180 Z M120,150 L110,170 L130,170 Z" />
+                <path d="M180,165 L175,185 L185,185 Z M180,155 L172,175 L188,175 Z M180,145 L170,165 L190,165 Z" />
+                <path d="M850,170 L845,190 L855,190 Z M850,160 L842,180 L858,180 Z M850,150 L840,170 L860,170 Z" />
+                <path d="M920,160 L915,180 L925,180 Z M920,150 L912,170 L928,170 Z M920,140 L910,160 L930,160 Z" />
+                <path d="M1050,155 L1045,175 L1055,175 Z M1050,145 L1042,165 L1058,165 Z M1050,135 L1040,155 L1060,155 Z" />
+                <path d="M1150,165 L1145,185 L1155,185 Z M1150,155 L1142,175 L1158,175 Z M1150,145 L1140,165 L1160,165 Z" />
+            </svg>
+        </div>
     </div>
-    
+
     <div class="workspace-card">
         <div class="header-section">
             <h1>Daily Routine</h1>
@@ -309,72 +355,28 @@
     </div>
 
     <script>
-        // --- 1. THE SVG BUILDER ENGINE ---
-        
-        // الگوریتم ساخت ستاره‌های آسمان
-        const starsGroup = document.getElementById('stars-group');
-        for (let i = 0; i < 200; i++) {
-            let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", Math.random() * 1920);
-            circle.setAttribute("cy", Math.random() * 700); // فقط در قسمت بالایی تصویر
-            circle.setAttribute("r", Math.random() * 1.5 + 0.5);
-            circle.setAttribute("fill", "#ffffff");
-            // انیمیشن چشمک‌زن رندوم
-            circle.style.animation = `twinkle-svg ${Math.random() * 4 + 2}s infinite alternate ${Math.random() * 5}s`;
-            starsGroup.appendChild(circle);
-        }
-
-        // الگوریتم ساخت جنگل انبوه داینامیک (کاشت اتوماتیک 120 درخت!)
-        const forestGroup = document.getElementById('forest-group');
-        for (let i = 0; i < 120; i++) {
-            let use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-            use.setAttribute("href", "#pine-tree");
-            
-            // پخش کردن درخت‌ها در عرض کادر (تراکم بیشتر در لبه‌ها)
-            let x = (1920 / 120) * i + (Math.random() * 30 - 15);
-            let scale = Math.random() * 0.8 + 0.4; // اندازه‌های مختلف
-            
-            // تنظیم ارتفاع درخت‌ها متناسب با پرسپکتیو کوه‌ها
-            let baseHeight = 1000;
-            // در وسط کادر (محل رودخانه) درخت‌ها پایین‌تر هستند
-            if (x > 300 && x < 800) baseHeight = 1050 + (Math.random()*20); 
-            
-            let y = baseHeight - (scale * 130) + (Math.random() * 40); 
-            
-            use.setAttribute("transform", `translate(${x}, ${y}) scale(${scale})`);
-            
-            // سایه روشن رندوم برای درخت‌ها جهت ایجاد حجم
-            use.setAttribute("opacity", Math.random() * 0.4 + 0.6);
-            
-            forestGroup.appendChild(use);
-        }
-
-        // --- 2. THE TIME ENGINE ---
-        function checkTime() {
+        function updateLivingWorld() {
             const hour = new Date().getHours();
-            let timeState = 'day';
+            let phase = 'noon';
 
-            if (hour >= 5 && hour < 8) timeState = 'sunrise';
-            else if (hour >= 17 && hour < 19) timeState = 'sunset';
-            else if (hour >= 19 || hour < 5) timeState = 'night';
+            if (hour >= 4 && hour < 6) phase = 'dawn';
+            else if (hour >= 6 && hour < 10) phase = 'morning';
+            else if (hour >= 10 && hour < 16) phase = 'afternoon';
+            else if (hour >= 16 && hour < 19) phase = 'sunset';
+            else if (hour >= 19 && hour < 20) phase = 'dusk';
+            else if (hour >= 20 && hour < 24) phase = 'night';
+            else if (hour >= 0 && hour < 4) phase = 'midnight';
 
-            // اگر خواستی به صورت دستی تست کنی، خط بالا را کامنت کن و خط پایین را تغییر بده:
-            // timeState = 'sunset'; 
-
-            document.body.setAttribute('data-time', timeState);
+            const currentPhase = document.body.getAttribute('data-time');
+            if (currentPhase !== phase) {
+                document.body.setAttribute('data-time', phase);
+                console.log(`[Living Engine] Phase Shifted to: ${phase}`);
+            }
         }
-        checkTime();
-        setInterval(checkTime, 60000); // بررسی هر 1 دقیقه
 
-        // --- 3. 3D PARALLAX ENGINE ---
-        // ردیابی موس برای ایجاد حس عمقِ میدان (Depth of Field) بین UI و بک‌گراند
-        document.addEventListener('mousemove', (e) => {
-            const mouseX = (e.clientX / window.innerWidth) * 2 - 1; // مقدار بین 1- و 1
-            const mouseY = (e.clientY / window.innerHeight) * 2 - 1;
-            
-            document.documentElement.style.setProperty('--mouse-x', mouseX);
-            document.documentElement.style.setProperty('--mouse-y', mouseY);
-        });
+        // Initialize and check every minute
+        updateLivingWorld();
+        setInterval(updateLivingWorld, 60000);
     </script>
 </body>
 </html>
