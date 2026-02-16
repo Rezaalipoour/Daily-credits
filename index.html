@@ -6,7 +6,6 @@
     <title>Workspace | Reza Alipour Studio</title>
     
     <link rel="icon" type="image/svg+xml" href="https://logo-teka.com/wp-content/uploads/2025/08/openart-ai-sign-logo.svg" />
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +14,6 @@
     
     <style>
         :root {
-            /* پس‌زمینه رنگی و عمیق‌تر به جای مشکی مطلق */
             --bg-color: #0a0b14;
             --card-bg: rgba(20, 22, 35, 0.45);
             --border-color: rgba(255, 255, 255, 0.08);
@@ -30,7 +28,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Outfit', sans-serif; /* اعمال فونت جدید */
+            font-family: 'Outfit', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             display: flex;
@@ -41,18 +39,17 @@
             position: relative;
         }
 
-        /* Interactive Spotlight Background - رنگی‌تر و زنده‌تر */
+        /* Interactive Spotlight */
         .spotlight {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none;
-            z-index: 0;
-            /* هاله نوری با رنگ آبی الکتریک */
+            z-index: 1;
             background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(99, 102, 241, 0.25) 0%, rgba(0, 0, 0, 0) 45%);
             transition: background 0.1s ease;
         }
 
-        /* Ambient Orbs - رنگ‌های کهکشانی و زنده بدون نویز */
+        /* Ambient Orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -60,13 +57,59 @@
             z-index: 0;
             animation: breathe 20s infinite alternate ease-in-out;
         }
-        .orb-1 { width: 500px; height: 500px; background: rgba(56, 189, 248, 0.2); top: -10%; left: -10%; } /* آبی روشن */
-        .orb-2 { width: 600px; height: 600px; background: rgba(168, 85, 247, 0.2); bottom: -20%; right: -10%; animation-delay: -5s; } /* بنفش روشن */
+        .orb-1 { width: 500px; height: 500px; background: rgba(56, 189, 248, 0.2); top: -10%; left: -10%; }
+        .orb-2 { width: 600px; height: 600px; background: rgba(168, 85, 247, 0.2); bottom: -20%; right: -10%; animation-delay: -5s; }
 
         @keyframes breathe {
             0% { transform: scale(1) translate(0, 0); opacity: 0.6; }
             100% { transform: scale(1.2) translate(30px, -30px); opacity: 0.9; }
         }
+
+        /* --- NEON METEOR SHOWER --- */
+        .meteor-shower {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .meteor {
+            position: absolute;
+            width: 150px; /* طول دنباله شهاب‌سنگ */
+            height: 1px;
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0) 0%, rgba(56, 189, 248, 0.8) 100%);
+            border-radius: 999px;
+            transform: rotate(-45deg);
+            opacity: 0;
+        }
+
+        /* سرِ درخشان شهاب‌سنگ */
+        .meteor::before {
+            content: '';
+            position: absolute;
+            top: 50%; right: 0;
+            transform: translateY(-50%);
+            width: 3px; height: 3px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 12px 3px rgba(56, 189, 248, 0.9);
+        }
+
+        @keyframes shootingStar {
+            0% { transform: rotate(-45deg) translateX(-300px); opacity: 0; }
+            10% { opacity: 1; }
+            20% { transform: rotate(-45deg) translateX(1000px); opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* زمان‌بندی و موقعیت‌های رندوم برای طبیعی شدن */
+        .m-1 { top: 10%; left: 20%; animation: shootingStar 6s linear infinite; animation-delay: 1s; }
+        .m-2 { top: -10%; left: 60%; animation: shootingStar 8s linear infinite; animation-delay: 3.5s; }
+        .m-3 { top: 40%; left: -20%; animation: shootingStar 7s linear infinite; animation-delay: 6s; }
+        .m-4 { top: 70%; left: 40%; animation: shootingStar 9s linear infinite; animation-delay: 2s; }
+        .m-5 { top: 20%; left: 80%; animation: shootingStar 12s linear infinite; animation-delay: 8s; }
+
 
         /* Main Glass Card */
         .workspace-card {
@@ -91,7 +134,7 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Header Styling - تایپوگرافی جدید و حرفه‌ای */
+        /* Header Styling */
         .header-section {
             text-align: center;
             margin-bottom: 40px;
@@ -102,7 +145,6 @@
             font-size: 32px;
             font-weight: 600;
             letter-spacing: -0.5px;
-            /* گرادیانت یخی و براق برای تیتر */
             background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 50%, #818cf8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -201,6 +243,14 @@
     </style>
 </head>
 <body>
+    <div class="meteor-shower">
+        <div class="meteor m-1"></div>
+        <div class="meteor m-2"></div>
+        <div class="meteor m-3"></div>
+        <div class="meteor m-4"></div>
+        <div class="meteor m-5"></div>
+    </div>
+
     <div class="spotlight" id="spotlight"></div>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
