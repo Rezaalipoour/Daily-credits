@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Credits | Reza Alipour Studio</title>
+    
+    <link rel="icon" href="https://fav.farm/✨" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         body {
             margin: 0;
@@ -30,14 +35,14 @@
         .bg-shape1 {
             width: 450px;
             height: 450px;
-            background: rgba(45, 20, 100, 0.35); /* Deep subtle purple */
+            background: rgba(45, 20, 100, 0.35);
             top: -100px;
             left: 5%;
         }
         .bg-shape2 {
             width: 350px;
             height: 350px;
-            background: rgba(10, 50, 120, 0.35); /* Deep subtle blue */
+            background: rgba(10, 50, 120, 0.35);
             bottom: -50px;
             right: 10%;
             animation-delay: -10s;
@@ -77,6 +82,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 12px; /* فاصله دقیق و مهندسی شده بین آیکون و متن */
             text-decoration: none;
             color: #fff;
             font-size: 16px;
@@ -98,6 +104,12 @@
             transform: translateY(-2px);
             border-color: rgba(255, 255, 255, 0.15);
         }
+        
+        /* تنظیم سایز آیکون‌ها برای هارمونی با متن */
+        .btn i {
+            font-size: 18px; 
+            opacity: 0.9;
+        }
 
         /* Subtle Brand Glows on Hover */
         .btn.youtube:hover { box-shadow: 0 10px 30px rgba(255, 0, 0, 0.15); border-color: rgba(255, 0, 0, 0.3); }
@@ -113,10 +125,18 @@
     <div class="container">
         <h1>Daily OpenArt Credits</h1>
         <div class="grid">
-            <a href="https://openart.ai/credit/openart-youtube" target="_blank" class="btn youtube">YouTube</a>
-            <a href="https://t.co/wM8qbo6lMa" target="_blank" class="btn twitter">Twitter</a>
-            <a href="https://openart.ai/credit/openart-instagram" target="_blank" class="btn instagram">Instagram</a>
-            <a href="https://openart.ai/credit/openart-linkedin-credits" target="_blank" class="btn linkedin">LinkedIn</a>
+            <a href="https://openart.ai/credit/openart-youtube" target="_blank" class="btn youtube">
+                <i class="fa-brands fa-youtube"></i> YouTube
+            </a>
+            <a href="https://t.co/wM8qbo6lMa" target="_blank" class="btn twitter">
+                <i class="fa-brands fa-x-twitter"></i> Twitter
+            </a>
+            <a href="https://openart.ai/credit/openart-instagram" target="_blank" class="btn instagram">
+                <i class="fa-brands fa-instagram"></i> Instagram
+            </a>
+            <a href="https://openart.ai/credit/openart-linkedin-credits" target="_blank" class="btn linkedin">
+                <i class="fa-brands fa-linkedin-in"></i> LinkedIn
+            </a>
         </div>
     </div>
 </body>
