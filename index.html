@@ -13,23 +13,71 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* سیستم رنگ‌بندی متغیر بر اساس زمان */
         :root {
-            --bg-color: #06070d; /* تاریک‌تر برای درخشش بهتر ستاره‌ها */
-            --card-bg: rgba(20, 22, 35, 0.45);
-            --border-color: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(20, 22, 35, 0.45);
             --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.6);
+            
+            /* رنگ‌های پیش‌فرض (روز) */
+            --sky-top: #56CCF2;
+            --sky-bottom: #e0f6ff;
+            --sun-color: #FFD700;
+            --sun-glow: rgba(255, 215, 0, 0.4);
+            --celestial-y: 20%;
+            --mountain-back: #6ab0d1;
+            --mountain-mid: #4a8eb0;
+            --mountain-front: #1c4966;
+            --ground: #0d2c40;
+            --star-opacity: 0;
         }
 
-        * {
-            box-sizing: border-box;
+        /* تم غروب (Sunset) */
+        [data-time="sunset"] {
+            --sky-top: #2c1b4d;
+            --sky-bottom: #e88c7d;
+            --sun-color: #ff7b54;
+            --sun-glow: rgba(255, 123, 84, 0.6);
+            --celestial-y: 60%;
+            --mountain-back: #5a3c69;
+            --mountain-mid: #3d2645;
+            --mountain-front: #1f1124;
+            --ground: #110814;
+            --star-opacity: 0.2;
         }
+
+        /* تم شب (Night) */
+        [data-time="night"] {
+            --sky-top: #0a0b14;
+            --sky-bottom: #1a1c29;
+            --sun-color: #ffffff;
+            --sun-glow: rgba(255, 255, 255, 0.3);
+            --celestial-y: 15%;
+            --mountain-back: #181d36;
+            --mountain-mid: #101426;
+            --mountain-front: #080a14;
+            --ground: #03040a;
+            --star-opacity: 1;
+        }
+
+        /* تم طلوع (Sunrise) */
+        [data-time="sunrise"] {
+            --sky-top: #4b6cb7;
+            --sky-bottom: #ffc371;
+            --sun-color: #ffb75e;
+            --sun-glow: rgba(255, 183, 94, 0.5);
+            --celestial-y: 50%;
+            --mountain-back: #685b8c;
+            --mountain-mid: #483d66;
+            --mountain-front: #2a2240;
+            --ground: #161024;
+            --star-opacity: 0.1;
+        }
+
+        * { box-sizing: border-box; }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
             color: var(--text-main);
             display: flex;
             justify-content: center;
@@ -37,14 +85,38 @@
             min-height: 100vh;
             overflow: hidden;
             position: relative;
+            /* پس‌زمینه آسمان که با زمان تغییر می‌کند */
+            background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+            transition: background 3s ease-in-out;
         }
 
-        /* ستاره‌های چشمک‌زن پس‌زمینه */
+        /* --- منظره زنده (Landscape) --- */
+        .landscape-container {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* خورشید / ماه */
+        .celestial-body {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: var(--celestial-y);
+            width: 120px; height: 120px;
+            background-color: var(--sun-color);
+            border-radius: 50%;
+            box-shadow: 0 0 60px 20px var(--sun-glow);
+            transition: all 4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ستاره‌ها */
         #stars-container {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0;
-            pointer-events: none;
+            opacity: var(--star-opacity);
+            transition: opacity 3s ease;
         }
 
         .star {
@@ -55,227 +127,121 @@
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.1; transform: scale(0.8); }
-            50% { opacity: 0.8; transform: scale(1.2); box-shadow: 0 0 4px rgba(255, 255, 255, 0.4); }
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 5px #fff; }
         }
 
-        /* نور متحرک موس */
-        .spotlight {
+        /* لایه‌های کوهستان با استفاده از وکتور خالص (Clip-Path) */
+        .mountain {
             position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
+            bottom: 0; width: 100vw;
+            transition: background-color 3s ease-in-out;
+        }
+
+        .mountain-back {
+            height: 45vh;
+            background-color: var(--mountain-back);
+            clip-path: polygon(0 100%, 0 50%, 15% 30%, 35% 60%, 60% 20%, 85% 55%, 100% 40%, 100% 100%);
             z-index: 1;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(99, 102, 241, 0.20) 0%, rgba(0, 0, 0, 0) 45%);
-            transition: background 0.1s ease;
         }
 
-        /* Ambient Orbs */
-        .orb {
+        .mountain-mid {
+            height: 35vh;
+            background-color: var(--mountain-mid);
+            clip-path: polygon(0 100%, 0 40%, 25% 60%, 50% 30%, 75% 65%, 100% 35%, 100% 100%);
+            z-index: 2;
+        }
+
+        .mountain-front {
+            height: 25vh;
+            background-color: var(--mountain-front);
+            clip-path: polygon(0 100%, 0 35%, 20% 50%, 45% 20%, 70% 55%, 90% 30%, 100% 45%, 100% 100%);
+            z-index: 3;
+        }
+
+        .ground {
             position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            z-index: 0;
-            animation: breathe 20s infinite alternate ease-in-out;
-        }
-        .orb-1 { width: 500px; height: 500px; background: rgba(56, 189, 248, 0.15); top: -10%; left: -10%; }
-        .orb-2 { width: 600px; height: 600px; background: rgba(168, 85, 247, 0.15); bottom: -20%; right: -10%; animation-delay: -5s; }
-
-        @keyframes breathe {
-            0% { transform: scale(1) translate(0, 0); opacity: 0.6; }
-            100% { transform: scale(1.2) translate(30px, -30px); opacity: 0.9; }
+            bottom: 0; width: 100vw; height: 10vh;
+            background-color: var(--ground);
+            z-index: 4;
+            transition: background-color 3s ease-in-out;
         }
 
-        /* --- شهاب‌سنگ‌های سریع‌تر --- */
-        .meteor-shower {
-            position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .meteor {
-            position: absolute;
-            width: 120px;
-            height: 1px;
-            background: linear-gradient(90deg, rgba(56, 189, 248, 0) 0%, rgba(56, 189, 248, 0.8) 100%);
-            border-radius: 999px;
-            transform: rotate(-45deg);
-            opacity: 0;
-        }
-
-        .meteor::before {
-            content: '';
-            position: absolute;
-            top: 50%; right: 0;
-            transform: translateY(-50%);
-            width: 2px; height: 2px;
-            border-radius: 50%;
-            background: #ffffff;
-            box-shadow: 0 0 10px 2px rgba(56, 189, 248, 0.9);
-        }
-
-        @keyframes shootingStar {
-            0% { transform: rotate(-45deg) translateX(-10vw); opacity: 0; }
-            5% { opacity: 1; }
-            20% { transform: rotate(-45deg) translateX(120vw); opacity: 0; }
-            100% { opacity: 0; }
-        }
-
-        /* تنظیم سرعت و تکرار سریع‌تر */
-        .m-1 { top: 15%; left: 20%; animation: shootingStar 4s linear infinite; animation-delay: 0s; }
-        .m-2 { top: -10%; left: 60%; animation: shootingStar 5.5s linear infinite; animation-delay: 1.5s; }
-        .m-3 { top: 50%; left: -20%; animation: shootingStar 4.5s linear infinite; animation-delay: 2.5s; }
-        .m-4 { top: 80%; left: 40%; animation: shootingStar 6s linear infinite; animation-delay: 0.8s; }
-        .m-5 { top: 20%; left: 80%; animation: shootingStar 5s linear infinite; animation-delay: 3.2s; }
-        .m-6 { top: 40%; left: 90%; animation: shootingStar 7s linear infinite; animation-delay: 4s; }
-        .m-7 { top: -5%; left: 30%; animation: shootingStar 4.8s linear infinite; animation-delay: 5s; }
-
-        /* Main Glass Card */
+        /* --- محفظه اصلی --- */
         .workspace-card {
             position: relative;
-            z-index: 2;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            z-index: 10;
+            background: var(--glass-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 30px;
             padding: 50px 40px;
             width: 100%;
             max-width: 420px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(35px);
-            -webkit-backdrop-filter: blur(35px);
-            
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             opacity: 0;
-            transform: translateY(30px) scale(0.95);
-            animation: cardEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform: translateY(30px);
+            animation: cardEntrance 1s ease forwards;
         }
 
-        @keyframes cardEntrance {
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        @keyframes cardEntrance { to { opacity: 1; transform: translateY(0); } }
 
-        .header-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        h1 {
-            margin: 0;
-            font-size: 32px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 50%, #818cf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .header-section { text-align: center; margin-bottom: 40px; }
+        h1 { margin: 0; font-size: 32px; font-weight: 600; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        p.subtitle { margin: 8px 0 0 0; font-size: 12px; font-weight: 500; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.7); }
 
-        p.subtitle {
-            margin: 8px 0 0 0;
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
+        .grid { display: flex; flex-direction: column; gap: 14px; }
 
         .btn {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 16px;
-            font-weight: 500;
+            display: flex; align-items: center; gap: 16px;
+            text-decoration: none; color: #fff; font-size: 16px; font-weight: 500;
             padding: 18px 24px;
-            
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-
-            opacity: 0;
-            transform: translateY(15px);
-            animation: btnEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes btnEntrance {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .btn:nth-child(1) { animation-delay: 0.2s; }
-        .btn:nth-child(2) { animation-delay: 0.3s; }
-        .btn:nth-child(3) { animation-delay: 0.4s; }
-        .btn:nth-child(4) { animation-delay: 0.5s; }
-        .btn:nth-child(5) { animation-delay: 0.6s; }
-
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px) scale(1.02);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-
-        .btn i {
-            font-size: 20px; 
-            width: 24px; 
-            text-align: center;
             transition: all 0.4s ease;
-            color: rgba(255, 255, 255, 0.7);
+            position: relative; overflow: hidden;
+            opacity: 0; transform: translateY(15px);
+            animation: btnEntrance 0.6s ease forwards;
         }
 
-        .btn:hover i {
-            transform: scale(1.2);
-        }
+        @keyframes btnEntrance { to { opacity: 1; transform: translateY(0); } }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 2px;
-            transition: all 0.6s ease;
-        }
+        .btn:nth-child(1) { animation-delay: 0.1s; }
+        .btn:nth-child(2) { animation-delay: 0.2s; }
+        .btn:nth-child(3) { animation-delay: 0.3s; }
+        .btn:nth-child(4) { animation-delay: 0.4s; }
+        .btn:nth-child(5) { animation-delay: 0.5s; }
 
+        .btn:hover { background: rgba(255, 255, 255, 0.12); transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.2); }
+        .btn i { font-size: 20px; width: 24px; text-align: center; transition: all 0.4s ease; color: rgba(255,255,255,0.8); }
+        .btn:hover i { transform: scale(1.2); }
+
+        .btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 2px; transition: all 0.6s ease; }
         .btn.youtube:hover::before { left: 0; background: linear-gradient(90deg, transparent, #ff0000, transparent); }
         .btn.youtube:hover i { color: #ff0000; text-shadow: 0 0 15px rgba(255,0,0,0.5); }
-
         .btn.twitter:hover::before { left: 0; background: linear-gradient(90deg, transparent, #ffffff, transparent); }
         .btn.twitter:hover i { color: #ffffff; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
-
         .btn.instagram:hover::before { left: 0; background: linear-gradient(90deg, transparent, #e1306c, transparent); }
         .btn.instagram:hover i { color: #e1306c; text-shadow: 0 0 15px rgba(225,48,108,0.5); }
-
         .btn.linkedin:hover::before { left: 0; background: linear-gradient(90deg, transparent, #0a66c2, transparent); }
         .btn.linkedin:hover i { color: #0a66c2; text-shadow: 0 0 15px rgba(10,102,194,0.5); }
-
         .btn.discord:hover::before { left: 0; background: linear-gradient(90deg, transparent, #5865F2, transparent); }
         .btn.discord:hover i { color: #5865F2; text-shadow: 0 0 15px rgba(88,101,242,0.5); }
 
     </style>
 </head>
-<body>
-    <div id="stars-container"></div>
+<body data-time="day">
 
-    <div class="meteor-shower">
-        <div class="meteor m-1"></div>
-        <div class="meteor m-2"></div>
-        <div class="meteor m-3"></div>
-        <div class="meteor m-4"></div>
-        <div class="meteor m-5"></div>
-        <div class="meteor m-6"></div>
-        <div class="meteor m-7"></div>
+    <div class="landscape-container">
+        <div id="stars-container"></div>
+        <div class="celestial-body" id="sun-moon"></div>
+        <div class="mountain mountain-back"></div>
+        <div class="mountain mountain-mid"></div>
+        <div class="mountain mountain-front"></div>
+        <div class="ground"></div>
     </div>
-
-    <div class="spotlight" id="spotlight"></div>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
     
     <div class="workspace-card">
         <div class="header-section">
@@ -303,38 +269,41 @@
     </div>
 
     <script>
-        // اسکریپت ردیابی موس
-        const spotlight = document.getElementById('spotlight');
-        window.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) * 100;
-            const y = (e.clientY / window.innerHeight) * 100;
-            spotlight.style.setProperty('--x', `${x}%`);
-            spotlight.style.setProperty('--y', `${y}%`);
-        });
-
-        // اسکریپت تولید ستاره‌های چشمک‌زن مینیمال
+        // تولید ستاره‌ها برای شب
         const starsContainer = document.getElementById('stars-container');
-        const starCount = 75; // تعداد ستاره‌ها (نه خیلی شلوغ، نه خیلی خلوت)
-
-        for (let i = 0; i < starCount; i++) {
+        for (let i = 0; i < 100; i++) {
             let star = document.createElement('div');
             star.classList.add('star');
-            
-            // موقعیت تصادفی در کل صفحه
             star.style.left = `${Math.random() * 100}vw`;
-            star.style.top = `${Math.random() * 100}vh`;
-            
-            // ابعاد بسیار ریز و تصادفی (بین 0.5 تا 1.5 پیکسل)
-            let size = Math.random() * 1 + 0.5;
+            star.style.top = `${Math.random() * 60}vh`; // ستاره‌ها فقط در آسمان باشن
+            let size = Math.random() * 1.5 + 0.5;
             star.style.width = `${size}px`;
             star.style.height = `${size}px`;
-            
-            // زمان‌بندی تصادفی برای چشمک زدن (تا ارگانیک به نظر برسد)
-            star.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            star.style.animationDuration = `${Math.random() * 3 + 2}s`;
             star.style.animationDelay = `${Math.random() * 5}s`;
-            
             starsContainer.appendChild(star);
         }
+
+        // موتور زمان (Time Engine)
+        function checkTime() {
+            const hour = new Date().getHours();
+            let timeState = 'day'; // حالت پیش‌فرض (8 صبح تا 5 عصر)
+
+            if (hour >= 5 && hour < 8) {
+                timeState = 'sunrise'; // طلوع (5 صبح تا 8 صبح)
+            } else if (hour >= 17 && hour < 20) {
+                timeState = 'sunset'; // غروب (5 عصر تا 8 شب)
+            } else if (hour >= 20 || hour < 5) {
+                timeState = 'night'; // شب (8 شب تا 5 صبح)
+            }
+
+            // اعمال تم روی صفحه
+            document.body.setAttribute('data-time', timeState);
+        }
+
+        // اجرای اولیه و بررسی هر یک دقیقه
+        checkTime();
+        setInterval(checkTime, 60000);
     </script>
 </body>
 </html>
