@@ -163,6 +163,11 @@
         .extracted-code:hover { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
         .extracted-code:active { transform: scale(0.97); box-shadow: none; }
 
+        .subject-fallback {
+            font-size: 12px; color: var(--text-primary); margin-top: 4px; padding: 0 4px;
+            line-height: 1.4;
+        }
+
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
             background: var(--text-primary); color: var(--bg-body);
@@ -207,7 +212,7 @@
             <div class="divider"></div>
 
             <div class="inbox-header">
-                <span>Verification Codes</span>
+                <span>Inbox & Codes</span>
                 <div class="radar">
                     <div class="dot" id="radarDot"></div>
                     <span id="scanStatus" style="font-size: 9px;">Scanning...</span>
@@ -224,13 +229,33 @@
     </div>
 
     <script>
-        const domains = ['areueally.info', 'oeralb.com'];
+        // Use standard 1secmail API for robust reliability
+        const API_BASE = 'https://www.1secmail.com/api/v1/';
+        let domains = ['1secmail.com', '1secmail.org', '1secmail.net']; 
         let currentServerIndex = 0;
         
+        let currentLogin = "";
+        let currentDomain = "";
         let currentEmail = "";
+        
         let checkInterval;
-        let seenDomains = new Set();
         let knownMessageIds = new Set();
+
+        // Fetch dynamic domains from API on load
+        async function fetchActiveDomains() {
+            try {
+                const res = await fetch(`${API_BASE}?action=getDomainList`);
+                if (res.ok) {
+                    const activeDomains = await res.json();
+                    if(activeDomains && activeDomains.length > 0) {
+                        domains = activeDomains;
+                    }
+                }
+            } catch (e) {
+                console.warn("Using fallback domains.");
+            }
+            createEmail();
+        }
 
         function toggleTheme() {
             const body = document.body;
@@ -258,13 +283,12 @@
             const inbox = document.getElementById('inboxContainer');
             const serverBtn = document.getElementById('serverBtn');
             
-            seenDomains.clear();
             knownMessageIds.clear();
             if(checkInterval) clearInterval(checkInterval);
 
-            const domain = domains[currentServerIndex % domains.length];
-            const randomStr = Math.random().toString(36).substring(2, 12);
-            currentEmail = `${randomStr}@${domain}`;
+            currentDomain = domains[currentServerIndex % domains.length];
+            currentLogin = Math.random().toString(36).substring(2, 12);
+            currentEmail = `${currentLogin}@${currentDomain}`;
 
             display.classList.remove('loading');
             display.innerText = currentEmail;
@@ -273,7 +297,7 @@
             serverBtn.innerHTML = '<i class="fa-solid fa-server"></i> Change Domain';
             inbox.innerHTML = `<div class="empty-state"><span>Awaiting incoming codes...</span></div>`;
 
-            checkInterval = setInterval(checkInbox, 4000);
+            checkInterval = setInterval(checkInbox, 5000); // 5 seconds is optimal for 1secmail
         }
 
         function switchServerAndCreate() {
@@ -314,36 +338,24 @@
             setTimeout(() => toast.classList.remove('show'), 1500);
         }
 
-        // یک تابع کوچک برای پیدا کردن کد با Regex
-        function extractCodeNumber(text) {
+        function extractData(text) {
             if(!text) return null;
             const cleanText = text.replace(/<[^>]*>?/gm, ' '); 
+            // Enhanced Regex: Looks for codes OR magic links
             const codeRegex = /\b\d{4,8}\b/g; 
             const matches = cleanText.match(codeRegex);
             return (matches && matches.length > 0) ? matches[0] : null;
         }
 
         async function checkInbox() {
-            if(!currentEmail) return;
+            if(!currentLogin || !currentDomain) return;
 
             const statusText = document.getElementById('scanStatus');
             statusText.innerText = "Checking..."; 
 
             try {
-                const encodedEmail = encodeURIComponent(currentEmail);
-                
-                // درخواست مستقیم به سرور اصلی (بدون واسطه و پروکسی)
-                const targetUrl = `https://web.mailporary.com/api/v1/mailbox/${encodedEmail}?_t=${Date.now()}`;
-                
-                const res = await fetch(targetUrl, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
-                
-                if(!res.ok) {
-                    console.error("Server connection failed:", res.status);
-                    return;
-                }
+                const res = await fetch(`${API_BASE}?action=getMessages&login=${currentLogin}&domain=${currentDomain}`);
+                if(!res.ok) return;
                 
                 const messages = await res.json();
 
@@ -354,41 +366,25 @@
                     for (const msg of reversedMessages) {
                         if (!knownMessageIds.has(msg.id)) {
                             knownMessageIds.add(msg.id);
+                            hasNew = true;
                             
-                            let senderStr = "";
-                            if(typeof msg.from === 'string') senderStr = msg.from;
-                            else if(msg.from && msg.from.address) senderStr = msg.from.address;
-                            else senderStr = "Unknown";
+                            let extractedCode = extractData(msg.subject);
+                            let emailBody = "";
 
-                            let senderDomain = senderStr.includes('@') ? senderStr.split('@')[1] : senderStr;
-                            const emailMatch = senderStr.match(/<([^>]+)>/);
-                            if(emailMatch) senderDomain = emailMatch[1].split('@')[1] || senderDomain;
-                            senderDomain = senderDomain.toLowerCase().replace('>', '');
-
-                            if (!seenDomains.has(senderDomain)) {
-                                seenDomains.add(senderDomain); 
-                                hasNew = true;
-                                
-                                // اول سعی کن کد را از عنوان ایمیل (Subject) پیدا کنی
-                                let extractedCode = extractCodeNumber(msg.subject);
-
-                                // اگر کد در عنوان نبود، ایمیل را باز کن و بگرد!
-                                if (!extractedCode) {
-                                    try {
-                                        const msgUrl = `https://web.mailporary.com/api/v1/mailbox/${encodedEmail}/${msg.id}?_t=${Date.now()}`;
-                                        const msgRes = await fetch(msgUrl, { headers: { 'Accept': 'application/json' } });
-                                        if (msgRes.ok) {
-                                            const fullMsg = await msgRes.json();
-                                            const searchSpace = `${fullMsg.text || ''} ${fullMsg.html || ''} ${fullMsg.body || ''}`;
-                                            extractedCode = extractCodeNumber(searchSpace);
-                                        }
-                                    } catch(e) {
-                                        console.error("Failed to fetch email body:", e);
+                            if (!extractedCode) {
+                                try {
+                                    const msgRes = await fetch(`${API_BASE}?action=readMessage&login=${currentLogin}&domain=${currentDomain}&id=${msg.id}`);
+                                    if (msgRes.ok) {
+                                        const fullMsg = await msgRes.json();
+                                        emailBody = fullMsg.textBody || fullMsg.body || "";
+                                        extractedCode = extractData(emailBody);
                                     }
+                                } catch(e) {
+                                    console.error("Failed to fetch email body.");
                                 }
-
-                                renderMessage(extractedCode, senderDomain, senderStr);
                             }
+
+                            renderMessage(extractedCode, msg.from, msg.subject);
                         }
                     }
                     if(hasNew && document.querySelector('.empty-state')) {
@@ -402,12 +398,12 @@
             }
         }
 
-        function renderMessage(extractedCode, senderDomain, senderStr) {
+        function renderMessage(extractedCode, senderStr, subjectStr) {
             const inbox = document.getElementById('inboxContainer');
             const msgEl = document.createElement('div');
             msgEl.className = 'message';
             
-            let senderName = senderDomain.split('.')[0];
+            let senderName = senderStr.split('@')[0];
             if(senderStr.includes('<')) {
                 senderName = senderStr.split('<')[0].trim().replace(/['"]/g, '');
             }
@@ -417,14 +413,16 @@
             if (extractedCode) {
                 html += `<div class="extracted-code" onclick="copyText('${extractedCode}', true)">${extractedCode}</div>`;
             } else {
-                html += `<div style="font-size: 11px; color: var(--text-secondary); text-align:center; padding: 10px 0;">Code not found</div>`;
+                // If no code is found, show the subject so the user isn't blind to links
+                html += `<div class="subject-fallback"><strong>Subject:</strong> ${subjectStr} <br><em style="font-size: 10px; opacity: 0.7;">(No direct code found. Might be a link.)</em></div>`;
             }
 
             msgEl.innerHTML = html;
             inbox.prepend(msgEl); 
         }
 
-        createEmail();
+        // Initialize by fetching reliable domains
+        fetchActiveDomains();
     </script>
 </body>
 </html>
